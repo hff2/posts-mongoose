@@ -1,0 +1,120 @@
+{
+	"info": {
+		"_postman_id": "9f5215e5-7b86-4ae1-aacd-754415d4cd1c",
+		"name": "post - heroku",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "取得所有貼文",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://damp-coast-50816.herokuapp.com/posts",
+					"protocol": "https",
+					"host": [
+						"damp-coast-50816",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"posts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "新增單筆貼文",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"phoebe\",\r\n    \"content\":\"測試內容5\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://damp-coast-50816.herokuapp.com/posts",
+					"protocol": "https",
+					"host": [
+						"damp-coast-50816",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"posts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "刪除全部貼文",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://damp-coast-50816.herokuapp.com/posts",
+					"protocol": "https",
+					"host": [
+						"damp-coast-50816",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"posts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "刪除單筆貼文",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://damp-coast-50816.herokuapp.com/posts/",
+					"protocol": "https",
+					"host": [
+						"damp-coast-50816",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"posts",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "編輯單筆貼文",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "https://damp-coast-50816.herokuapp.com/posts/",
+					"protocol": "https",
+					"host": [
+						"damp-coast-50816",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"posts",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
