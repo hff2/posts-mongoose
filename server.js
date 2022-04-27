@@ -81,10 +81,17 @@ const requestListener = async (req, res) => {
     else if (req.url.startsWith("/posts/") && req.method === "DELETE") {
         try {
             const postId = req.url.split('/').pop();
-            await Post.findByIdAndDelete(postId);
-            successHandle(res, '刪除資料成功');
-        } catch {
-            errorHandle(res, '刪除資料失敗或無此 ID');
+            const result = await Post.findByIdAndDelete(postId);
+            if (!result) {
+                errorHandle(res, 400, '無此 Post')
+                return
+            }
+            const posts = await Post.find()
+            successHandle(res, 200, posts);
+
+        } catch (e) {
+            console.log(e);
+            errorHandle(res, 400, '刪除單筆 posts 錯誤');
         }
     }
     /* PATCH */
