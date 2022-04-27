@@ -19,9 +19,19 @@ mongoose
 
 const requestListener = async (req, res) => {
     let body = "";
-    req.on('data', chunk => {
-        body += chunk;
-    })
+    try {
+        await new Promise((resolve, reject) => {
+            req
+                .on('data', chunk => body += chunk)
+                .on('end', () => resolve())
+                .on('error', e => reject(e))
+        })
+    }
+    catch (e) {
+        console.error(e)
+        errorHandle(res, 400, '執行錯誤')
+    }
+
     /* GET */
     if (req.url === '/posts' && req.method === REQUEST_METHOD.GET) {
         const post = await Post.find();
@@ -52,11 +62,11 @@ const requestListener = async (req, res) => {
             }
         })
     }
-    /* DELETE ALL */ 
+    /* DELETE ALL */
     else if (req.url === '/posts' && req.method === 'DELETE') {
         await Post.deleteMany({});
         successHandle(res, '刪除所有資料成功');
-    } 
+    }
     /* DELETE ONE */
     else if (req.url.startsWith("/posts/") && req.method === "DELETE") {
         try {
@@ -75,16 +85,16 @@ const requestListener = async (req, res) => {
                 const data = JSON.parse(body);
                 await Post.findByIdAndUpdate(postId, {
                     content: data.content
-            });
-            successHandle(res, '修改資料成功')
+                });
+                successHandle(res, '修改資料成功')
             } catch {
                 errorHandle(res, '修改資料失敗，欄位名稱不正確或無此 ID');
             }
         })
-    }    
+    }
     /* OPTIONS */
     else if (req.method === "OPTIONS") {
-        successHandle(200,HEADERS)
+        successHandle(200, HEADERS)
     }
     else {
         res.writeHead(404, HEADERS);
@@ -97,4 +107,5 @@ const requestListener = async (req, res) => {
 }
 
 const server = http.createServer(requestListener)
-server.listen(process.env.PORT)
+// server.listen(process.env.PORT)
+server.listen(3005)
