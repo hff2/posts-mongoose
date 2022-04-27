@@ -96,18 +96,26 @@ const requestListener = async (req, res) => {
     }
     /* PATCH */
     else if (req.url.startsWith('/posts/') && req.method === 'PATCH') {
-        req.on('end', async () => {
-            try {
-                const postId = req.url.split('/').pop();
-                const data = JSON.parse(body);
-                await Post.findByIdAndUpdate(postId, {
-                    content: data.content
-                });
-                successHandle(res, '修改資料成功')
-            } catch {
-                errorHandle(res, '修改資料失敗，欄位名稱不正確或無此 ID');
+        try {
+            /* 確認內容 */
+            const postId = req.url.split('/').pop();
+            const data = JSON.parse(body);
+            const { content } = data;
+            if (!content) {
+                errorHandle(res, 400, '修改資料失敗，需填寫內文');
+                return
             }
-        })
+            /* 確認內容 與 id */
+            const result = await Post.findByIdAndUpdate(postId, { content });
+            if (!result) {
+                errorHandle(res, 400, '無此 posts')
+                return
+            }
+            const posts = await Post.find()
+            successHandle(res, 200, posts)
+        } catch {
+            errorHandle(res, 400, '修改資料失敗，欄位名稱錯誤或無此 ID');
+        }
     }
     /* OPTIONS */
     else if (req.method === "OPTIONS") {
