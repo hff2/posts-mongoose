@@ -1,7 +1,7 @@
 const { HEADERS } = require('./constant')
 
-const successHandle = (res, posts) => {
-    res.writeHead(200, HEADERS)
+const successHandle = (res, statusCode, posts) => {
+    res.writeHead(statusCode, HEADERS)
     res.write(JSON.stringify({
         status: 200,
         data: posts

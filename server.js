@@ -34,38 +34,48 @@ const requestListener = async (req, res) => {
 
     /* GET */
     if (req.url === '/posts' && req.method === REQUEST_METHOD.GET) {
-        const post = await Post.find();
-        successHandle(res, post)
+        try {
+            const post = await Post.find();
+            successHandle(res, 200, post)
+        }
+        catch (e) {
+            console.error(e)
+            errorHandle(res, 400, '取得 posts 錯誤')
+        }
     }
     /* POST */
     else if (req.url === '/posts' && req.method === REQUEST_METHOD.POST) {
-        req.on('end', async () => {
-            try {
-                const data = JSON.parse(body)
-                const content = data?.content ?? undefined
+        try {
+            const data = JSON.parse(body)
+            const { name, content } = data
 
-                if (content !== undefined) {
-                    const newPost = await Post.create(
-                        {
-                            name: data.name,
-                            content: data.content,
-                        }
-                    );
-                    successHandle(res, newPost)
-                }
-                else {
-                    errorHandle(res, 400, '資料不齊全')
-                }
+            if (!content || !name) {
+                errorHandle(res, 400, '資料不齊全')
+                return
             }
-            catch {
-                errorHandle(res, 400, '建立失敗')
-            }
-        })
+            const newPost = await Post.create(
+                {
+                    name: data.name,
+                    content: data.content,
+                }
+            );
+            successHandle(res, 200, newPost)
+        }
+        catch (e) {
+            console.error(e)
+            errorHandle(res, 400, '建立 posts 錯誤')
+        }
     }
     /* DELETE ALL */
     else if (req.url === '/posts' && req.method === 'DELETE') {
-        await Post.deleteMany({});
-        successHandle(res, '刪除所有資料成功');
+        try {
+            await Post.deleteMany({});
+            successHandle(res, 200, []);
+        }
+        catch (e) {
+            console.error(e)
+            errorHandle(res, 400, '刪除全部 posts 錯誤')
+        }
     }
     /* DELETE ONE */
     else if (req.url.startsWith("/posts/") && req.method === "DELETE") {
