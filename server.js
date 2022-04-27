@@ -119,15 +119,10 @@ const requestListener = async (req, res) => {
     }
     /* OPTIONS */
     else if (req.method === "OPTIONS") {
-        successHandle(200, HEADERS)
-    }
-    else {
-        res.writeHead(404, HEADERS);
-        res.write(JSON.stringify({
-            "status": "false",
-            "message": "無此網站路由"
-        }));
-        res.end();
+        res.writeHead(200, HEADER)
+        res.end()
+    } else {
+        errorHandle(res, 404, "無此網站路由")
     }
 }
 
