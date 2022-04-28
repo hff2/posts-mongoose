@@ -1,50 +1,21 @@
-const http = require('http')
-const { HEADERS, REQUEST_METHOD } = require('./constant')
-const { successHandle, errorHandle } = require('./responseHandle')
-const dotenv = require('dotenv')
-const Post = require('./models/post')
-const mongoose = require('mongoose');
+const { successHandle, errorHandle } = require('../service/responseHandle')
+const Post = require('../models/post')
 
-dotenv.config({ path: "./config.env" });
-
-const DB = process.env.DATABASE.replace(
-    '<password>', process.env.DATABASE_PASSWORD
-)
-mongoose
-    .connect(DB)
-    .then(() => console.log('資料庫連接成功'))
-    .catch((error) => {
-        console.log(error);
-    })
-
-const requestListener = async (req, res) => {
-    let body = "";
-    try {
-        await new Promise((resolve, reject) => {
-            req
-                .on('data', chunk => body += chunk)
-                .on('end', () => resolve())
-                .on('error', e => reject(e))
-        })
-    }
-    catch (e) {
-        console.error(e)
-        errorHandle(res, 400, '執行錯誤')
-    }
-
+const posts = {
     /* GET */
-    if (req.url === '/posts' && req.method === REQUEST_METHOD.GET) {
+    async getPosts({ req, res }) {
         try {
-            const post = await Post.find();
-            successHandle(res, 200, post)
+            const allPosts = await Post.find();
+            successHandle(res, 200, allPosts)
         }
         catch (e) {
             console.error(e)
             errorHandle(res, 400, '取得 posts 錯誤')
         }
-    }
+    },
+
     /* POST */
-    else if (req.url === '/posts' && req.method === REQUEST_METHOD.POST) {
+    async createPosts({ body, req, res }) {
         try {
             const data = JSON.parse(body)
             const { name, content } = data
@@ -65,9 +36,10 @@ const requestListener = async (req, res) => {
             console.error(e)
             errorHandle(res, 400, '建立 posts 錯誤')
         }
-    }
+    },
+
     /* DELETE ALL */
-    else if (req.url === '/posts' && req.method === 'DELETE') {
+    async deleteAllPosts({ req, rse }) {
         try {
             await Post.deleteMany({});
             successHandle(res, 200, []);
@@ -76,11 +48,12 @@ const requestListener = async (req, res) => {
             console.error(e)
             errorHandle(res, 400, '刪除全部 posts 錯誤')
         }
-    }
+    },
+
     /* DELETE ONE */
-    else if (req.url.startsWith("/posts/") && req.method === "DELETE") {
+    async deleteOnePost({ req, res }) {
         try {
-            const postId = req.url.split('/').pop();
+            const postId = url.split('/').pop();
             const result = await Post.findByIdAndDelete(postId);
             if (!result) {
                 errorHandle(res, 400, '無此 Post')
@@ -93,12 +66,13 @@ const requestListener = async (req, res) => {
             console.log(e);
             errorHandle(res, 400, '刪除單筆 posts 錯誤');
         }
-    }
+    },
+
     /* PATCH */
-    else if (req.url.startsWith('/posts/') && req.method === 'PATCH') {
+    async patchPosts({ body, req, res }) {
         try {
             /* 確認內容 */
-            const postId = req.url.split('/').pop();
+            const postId = url.split('/').pop();
             const data = JSON.parse(body);
             const { content } = data;
             if (!content) {
@@ -117,15 +91,6 @@ const requestListener = async (req, res) => {
             errorHandle(res, 400, '修改資料失敗，欄位名稱錯誤或無此 ID');
         }
     }
-    /* OPTIONS */
-    else if (req.method === "OPTIONS") {
-        res.writeHead(200, HEADER)
-        res.end()
-    } else {
-        errorHandle(res, 404, "無此網站路由")
-    }
 }
 
-const server = http.createServer(requestListener)
-// server.listen(process.env.PORT)
-server.listen(3005)
+module.exports = { posts }

@@ -1,0 +1,5 @@
+const http = require('http')
+const requestListener = require('../app')
+
+const server = http.createServer(requestListener)
+server.listen(process.env.PORT || 3005)
