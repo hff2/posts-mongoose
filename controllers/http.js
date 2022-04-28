@@ -11,4 +11,4 @@ const httpControllers = {
     }
 }
 
-module.exports = { httpControllers }
+module.exports = httpControllers

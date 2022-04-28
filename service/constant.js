@@ -11,6 +11,7 @@ const REQUEST_METHOD = Object.freeze({
     POST: 'POST',
     DELETE: 'DELETE',
     OPTION: 'OPTION',
+    PATCH: 'PATCH'
 })
 
 module.exports = {

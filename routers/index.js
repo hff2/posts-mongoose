@@ -35,11 +35,11 @@ const routes = async (req, res) => {
     }
     /* DELETE ONE */
     else if (url.startsWith("/posts/") && method === REQUEST_METHOD.DELETE) {
-        postsControllers.deleteOnePost({ req, res })
+        postsControllers.deleteOnePost({ url, req, res })
     }
     /* PATCH */
     else if (url.startsWith('/posts/') && method === REQUEST_METHOD.PATCH) {
-        postsControllers.patchPosts({ body, req, res })
+        postsControllers.patchPosts({ body, url, req, res })
     }
     /* OPTIONS */
     else if (method === REQUEST_METHOD.OPTIONS) {

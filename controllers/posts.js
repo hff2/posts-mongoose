@@ -39,7 +39,7 @@ const posts = {
     },
 
     /* DELETE ALL */
-    async deleteAllPosts({ req, rse }) {
+    async deleteAllPosts({ req, res }) {
         try {
             await Post.deleteMany({});
             successHandle(res, 200, []);
@@ -51,7 +51,7 @@ const posts = {
     },
 
     /* DELETE ONE */
-    async deleteOnePost({ req, res }) {
+    async deleteOnePost({ req, res, url }) {
         try {
             const postId = url.split('/').pop();
             const result = await Post.findByIdAndDelete(postId);
@@ -69,7 +69,7 @@ const posts = {
     },
 
     /* PATCH */
-    async patchPosts({ body, req, res }) {
+    async patchPosts({ body, url, req, res }) {
         try {
             /* 確認內容 */
             const postId = url.split('/').pop();
@@ -93,4 +93,4 @@ const posts = {
     }
 }
 
-module.exports = { posts }
+module.exports = posts 
